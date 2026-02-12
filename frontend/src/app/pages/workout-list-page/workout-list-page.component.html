@@ -6,30 +6,67 @@
   </div>
 </div>
 
-<div class="card" *ngIf="workouts$ | async as workouts">
-  <div *ngIf="workouts.length === 0" class="muted">No workouts yet.</div>
+<div class="grid">
+  <section class="card">
+    <div class="card-header">
+      <h2>Calendar</h2>
+      <div class="cal-controls">
+        <button class="btn secondary" type="button" (click)="prevMonth()">Prev</button>
+        <div class="cal-month">{{ monthLabel$ | async }}</div>
+        <button class="btn secondary" type="button" (click)="nextMonth()">Next</button>
+      </div>
+    </div>
 
-  <table *ngIf="workouts.length > 0">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Activity</th>
-        <th class="right">Minutes</th>
-        <th>Notes</th>
-        <th class="right">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let w of workouts; trackBy: trackById">
-        <td class="mono">{{ w.workout_date }}</td>
-        <td>{{ w.activity }}</td>
-        <td class="right mono">{{ w.duration_minutes ?? '' }}</td>
-        <td class="notes">{{ w.notes }}</td>
-        <td class="right">
-          <a class="link" [routerLink]="['/workouts', w.id, 'edit']">Edit</a>
-          <button class="link danger" type="button" (click)="deleteWorkout(w)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="calendar" *ngIf="calendarDays$ | async as cal">
+      <div class="cal-dow" *ngFor="let d of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">{{ d }}</div>
+      <div
+        class="cal-day"
+        *ngFor="let day of cal.days"
+        [class.outside]="!day.inMonth"
+        [class.workout]="day.workedOut"
+        [title]="day.ymd + (day.workedOut ? ' • workout' : '')"
+      >
+        {{ day.date.getDate() }}
+      </div>
+
+      <div class="legend">
+        <span class="dot workout"></span> worked out
+      </div>
+    </div>
+  </section>
+
+  <section class="card" *ngIf="workouts$ | async as workouts">
+    <div class="card-header">
+      <h2>Log</h2>
+      <div class="muted" *ngIf="workouts.length">{{ workouts.length }} entries</div>
+    </div>
+
+    <div *ngIf="workouts.length === 0" class="muted">No workouts yet.</div>
+
+    <div class="table-wrap" *ngIf="workouts.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Activity</th>
+            <th class="right">Minutes</th>
+            <th>Notes</th>
+            <th class="right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let w of workouts; trackBy: trackById">
+            <td class="mono">{{ w.workout_date }}</td>
+            <td>{{ w.activity }}</td>
+            <td class="right mono">{{ w.duration_minutes ?? '' }}</td>
+            <td class="notes" [title]="w.notes || ''">{{ w.notes }}</td>
+            <td class="right">
+              <a class="link" [routerLink]="['/workouts', w.id, 'edit']">Edit</a>
+              <button class="link danger" type="button" (click)="deleteWorkout(w)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </div>

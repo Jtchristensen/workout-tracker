@@ -1,0 +1,22 @@
+# Node / frontend
+node_modules/
+dist/
+.angular/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Docker
+*.log
+
+# Local data exports (do not commit)
+export.xml
+*.healthkit.xml
+*.healthdata.xml

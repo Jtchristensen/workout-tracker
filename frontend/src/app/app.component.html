@@ -1,0 +1,13 @@
+<header class="app-header">
+  <div class="container">
+    <a class="brand" routerLink="/workouts">Workout Tracker</a>
+    <nav class="nav">
+      <a routerLink="/workouts" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Workouts</a>
+      <a routerLink="/workouts/new" routerLinkActive="active">Add</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <router-outlet></router-outlet>
+</main>

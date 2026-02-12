@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16
+    container_name: workout_db
+    environment:
+      POSTGRES_DB: workout
+      POSTGRES_USER: workout
+      POSTGRES_PASSWORD: workout
+    ports:
+      - "5432:5432"
+    volumes:
+      - workout_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U workout -d workout"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: ./api
+    container_name: workout_api
+    environment:
+      DATABASE_URL: postgresql+psycopg://workout:workout@db:5432/workout
+      FLASK_ENV: development
+      FLASK_DEBUG: "1"
+      CORS_ORIGINS: "http://localhost:4200"
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+
+volumes:
+  workout_pgdata:

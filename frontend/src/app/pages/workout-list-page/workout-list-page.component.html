@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h1>Workouts</h1>
+  <div class="actions">
+    <a class="btn" routerLink="/workouts/new">Add workout</a>
+    <button class="btn secondary" type="button" (click)="refresh()">Refresh</button>
+  </div>
+</div>
+
+<div class="card" *ngIf="workouts$ | async as workouts">
+  <div *ngIf="workouts.length === 0" class="muted">No workouts yet.</div>
+
+  <table *ngIf="workouts.length > 0">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Activity</th>
+        <th class="right">Minutes</th>
+        <th>Notes</th>
+        <th class="right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let w of workouts; trackBy: trackById">
+        <td class="mono">{{ w.workout_date }}</td>
+        <td>{{ w.activity }}</td>
+        <td class="right mono">{{ w.duration_minutes ?? '' }}</td>
+        <td class="notes">{{ w.notes }}</td>
+        <td class="right">
+          <a class="link" [routerLink]="['/workouts', w.id, 'edit']">Edit</a>
+          <button class="link danger" type="button" (click)="deleteWorkout(w)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

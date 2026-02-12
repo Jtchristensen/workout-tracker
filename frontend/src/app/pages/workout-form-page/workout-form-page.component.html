@@ -1,0 +1,44 @@
+<div class="page-header">
+  <h1 *ngIf="!workoutId">Add workout</h1>
+  <h1 *ngIf="workoutId">Edit workout</h1>
+
+  <div class="actions">
+    <a class="btn secondary" routerLink="/workouts">Cancel</a>
+    <button class="btn" type="button" (click)="save()" [disabled]="loading">
+      {{ loading ? 'Saving…' : 'Save' }}
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div *ngIf="loading" class="muted">Loading…</div>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="grid">
+      <label>
+        <span>Date</span>
+        <input type="date" formControlName="workout_date" />
+      </label>
+
+      <label>
+        <span>Activity</span>
+        <input type="text" formControlName="activity" placeholder="e.g. Run, Lift, Yoga" />
+      </label>
+
+      <label>
+        <span>Minutes (optional)</span>
+        <input type="number" formControlName="duration_minutes" min="0" step="1" />
+      </label>
+
+      <label class="full">
+        <span>Notes (optional)</span>
+        <textarea rows="5" formControlName="notes" placeholder="Anything you want to remember…"></textarea>
+      </label>
+    </div>
+
+    <div class="errors" *ngIf="form.touched && form.invalid">
+      <div *ngIf="form.controls.workout_date.touched && form.controls.workout_date.invalid">Date is required.</div>
+      <div *ngIf="form.controls.activity.touched && form.controls.activity.invalid">Activity is required.</div>
+    </div>
+  </form>
+</div>

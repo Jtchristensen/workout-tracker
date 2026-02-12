@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.app-header {
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  position: sticky;
+  top: 0;
+}
+
+.app-header .container {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-weight: 700;
+  color: #111827;
+  text-decoration: none;
+}
+
+.nav a {
+  margin-left: 12px;
+  text-decoration: none;
+  color: #374151;
+}
+
+.nav a.active {
+  color: #111827;
+  font-weight: 600;
+}
+
+main.container {
+  padding-top: 18px;
+  padding-bottom: 48px;
+}

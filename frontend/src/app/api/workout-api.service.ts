@@ -1,0 +1,50 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Workout {
+  id: number;
+  workout_date: string; // YYYY-MM-DD
+  activity: string;
+  duration_minutes: number | null;
+  notes: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface WorkoutCreate {
+  workout_date: string;
+  activity: string;
+  duration_minutes?: number | null;
+  notes?: string | null;
+}
+
+@Injectable({ providedIn: 'root' })
+export class WorkoutApiService {
+  private readonly baseUrl = '/api';
+
+  constructor(private http: HttpClient) {}
+
+  listWorkouts(filters?: { from?: string; to?: string }): Observable<Workout[]> {
+    let params = new HttpParams();
+    if (filters?.from) params = params.set('from', filters.from);
+    if (filters?.to) params = params.set('to', filters.to);
+    return this.http.get<Workout[]>(`${this.baseUrl}/workouts`, { params });
+  }
+
+  getWorkout(id: number): Observable<Workout> {
+    return this.http.get<Workout>(`${this.baseUrl}/workouts/${id}`);
+  }
+
+  createWorkout(payload: WorkoutCreate): Observable<Workout> {
+    return this.http.post<Workout>(`${this.baseUrl}/workouts`, payload);
+  }
+
+  updateWorkout(id: number, payload: Partial<WorkoutCreate>): Observable<Workout> {
+    return this.http.put<Workout>(`${this.baseUrl}/workouts/${id}`, payload);
+  }
+
+  deleteWorkout(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/workouts/${id}`);
+  }
+}

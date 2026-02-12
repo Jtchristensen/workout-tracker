@@ -1,6 +1,10 @@
 <header class="app-header">
   <div class="container">
-    <a class="brand" routerLink="/workouts">Workout Tracker</a>
+    <a class="brand" routerLink="/workouts">
+      <img class="brand-mark" src="assets/cat.svg" alt="Cat" width="28" height="28" />
+      <span>Workout Tracker</span>
+    </a>
+
     <nav class="nav">
       <a routerLink="/workouts" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Workouts</a>
       <a routerLink="/workouts/new" routerLinkActive="active">Add</a>

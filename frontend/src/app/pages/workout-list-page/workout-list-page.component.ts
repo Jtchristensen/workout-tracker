@@ -22,24 +22,17 @@ function toYmd(d: Date): string {
 export class WorkoutListPageComponent {
   private api = inject(WorkoutApiService);
 
-  readonly pageSize = 50;
-  offset$ = new BehaviorSubject<number>(0);
+  private readonly pageSize = 50;
+  private offset$ = new BehaviorSubject<number>(0);
   private refresh$ = new BehaviorSubject<void>(undefined);
 
+  // Paged list for the log/table.
   logWorkouts$ = combineLatest([this.offset$, this.refresh$]).pipe(
     switchMap(([offset]) => this.api.listWorkouts(undefined, { limit: this.pageSize, offset })),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  totalCount$ = this.refresh$.pipe(
-    switchMap(() => this.api.countWorkouts()),
-    map((res) => res.count),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
-
-  totalPages$ = this.totalCount$.pipe(map((count) => Math.max(1, Math.ceil(count / this.pageSize))));
-  currentPage$ = this.offset$.pipe(map((offset) => Math.floor(offset / this.pageSize) + 1));
-
+  // Calendar
   private monthOffset$ = new BehaviorSubject<number>(0);
 
   monthLabel$ = this.monthOffset$.pipe(
@@ -58,19 +51,27 @@ export class WorkoutListPageComponent {
       const from = toYmd(monthStart);
       const to = toYmd(monthEnd);
 
+      // Pull all workouts for the current month only (fast) so highlights are accurate.
       return this.api
         .listWorkouts({ from, to }, { limit: 500, offset: 0 })
-        .pipe(map((workouts) => ({ monthStart, workouts })));
+        .pipe(
+          map((workouts) => ({
+            off,
+            monthStart,
+            monthEnd,
+            workouts,
+          }))
+        );
     }),
     map(({ monthStart, workouts }) => {
-      const firstDow = monthStart.getDay();
+      const firstDow = monthStart.getDay(); // 0 Sun
       const gridStart = new Date(monthStart);
       gridStart.setDate(monthStart.getDate() - firstDow);
 
       const workoutDates = new Set(workouts.map((w) => w.workout_date));
 
       const days: Array<{ date: Date; ymd: string; inMonth: boolean; workedOut: boolean }> = [];
-      const totalCells = 42;
+      const totalCells = 42; // 6 weeks
       for (let i = 0; i < totalCells; i++) {
         const d = new Date(gridStart);
         d.setDate(gridStart.getDate() + i);
@@ -97,8 +98,7 @@ export class WorkoutListPageComponent {
   }
 
   prevPage() {
-    const nextOffset = Math.max(0, this.offset$.value - this.pageSize);
-    if (nextOffset !== this.offset$.value) this.offset$.next(nextOffset);
+    this.offset$.next(Math.max(0, this.offset$.value - this.pageSize));
   }
 
   nextPage(currentCount: number) {

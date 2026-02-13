@@ -22,10 +22,13 @@ function toYmd(d: Date): string {
 export class WorkoutListPageComponent {
   private api = inject(WorkoutApiService);
 
+  private readonly pageSize = 50;
+  private offset$ = new BehaviorSubject<number>(0);
   private refresh$ = new BehaviorSubject<void>(undefined);
 
-  workouts$ = combineLatest([this.refresh$]).pipe(
-    switchMap(() => this.api.listWorkouts()),
+  // Paged list for the log/table.
+  logWorkouts$ = combineLatest([this.offset$, this.refresh$]).pipe(
+    switchMap(([offset]) => this.api.listWorkouts(undefined, { limit: this.pageSize, offset })),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -40,12 +43,27 @@ export class WorkoutListPageComponent {
     })
   );
 
-  calendarDays$ = combineLatest([this.monthOffset$, this.workouts$]).pipe(
-    map(([off, workouts]) => {
+  calendarDays$ = combineLatest([this.monthOffset$, this.refresh$]).pipe(
+    switchMap(([off]) => {
       const base = new Date();
       const monthStart = new Date(base.getFullYear(), base.getMonth() + off, 1);
       const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
+      const from = toYmd(monthStart);
+      const to = toYmd(monthEnd);
 
+      // Pull all workouts for the current month only (fast) so highlights are accurate.
+      return this.api
+        .listWorkouts({ from, to }, { limit: 500, offset: 0 })
+        .pipe(
+          map((workouts) => ({
+            off,
+            monthStart,
+            monthEnd,
+            workouts,
+          }))
+        );
+    }),
+    map(({ monthStart, workouts }) => {
       const firstDow = monthStart.getDay(); // 0 Sun
       const gridStart = new Date(monthStart);
       gridStart.setDate(monthStart.getDate() - firstDow);
@@ -66,12 +84,9 @@ export class WorkoutListPageComponent {
         });
       }
 
-      return {
-        monthStart,
-        monthEnd,
-        days,
-      };
-    })
+      return { days };
+    }),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   prevMonth() {
@@ -80,6 +95,15 @@ export class WorkoutListPageComponent {
 
   nextMonth() {
     this.monthOffset$.next(this.monthOffset$.value + 1);
+  }
+
+  prevPage() {
+    this.offset$.next(Math.max(0, this.offset$.value - this.pageSize));
+  }
+
+  nextPage(currentCount: number) {
+    if (currentCount < this.pageSize) return;
+    this.offset$.next(this.offset$.value + this.pageSize);
   }
 
   trackById(_: number, w: Workout) {

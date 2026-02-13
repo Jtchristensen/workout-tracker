@@ -25,10 +25,15 @@ export class WorkoutApiService {
 
   constructor(private http: HttpClient) {}
 
-  listWorkouts(filters?: { from?: string; to?: string }): Observable<Workout[]> {
+  listWorkouts(
+    filters?: { from?: string; to?: string },
+    paging?: { limit?: number; offset?: number }
+  ): Observable<Workout[]> {
     let params = new HttpParams();
     if (filters?.from) params = params.set('from', filters.from);
     if (filters?.to) params = params.set('to', filters.to);
+    if (paging?.limit != null) params = params.set('limit', String(paging.limit));
+    if (paging?.offset != null) params = params.set('offset', String(paging.offset));
     return this.http.get<Workout[]>(`${this.baseUrl}/workouts`, { params });
   }
 

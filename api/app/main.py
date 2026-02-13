@@ -54,8 +54,22 @@ def create_app() -> Flask:
     @app.get("/api/workouts")
     def list_workouts():
         # Optional filters: from=YYYY-MM-DD, to=YYYY-MM-DD
+        # Pagination: limit (default 50), offset (default 0)
         from_s = request.args.get("from")
         to_s = request.args.get("to")
+
+        try:
+            limit = int(request.args.get("limit", "50"))
+        except ValueError:
+            return jsonify({"error": "limit must be an integer"}), 400
+
+        try:
+            offset = int(request.args.get("offset", "0"))
+        except ValueError:
+            return jsonify({"error": "offset must be an integer"}), 400
+
+        limit = max(1, min(limit, 500))
+        offset = max(0, offset)
 
         q = Workout.query
         if from_s:
@@ -63,7 +77,12 @@ def create_app() -> Flask:
         if to_s:
             q = q.filter(Workout.workout_date <= date.fromisoformat(to_s))
 
-        workouts = q.order_by(Workout.workout_date.desc(), Workout.id.desc()).all()
+        workouts = (
+            q.order_by(Workout.workout_date.desc(), Workout.id.desc())
+            .limit(limit)
+            .offset(offset)
+            .all()
+        )
         return jsonify([w.to_dict() for w in workouts])
 
     @app.post("/api/workouts")

@@ -28,10 +28,6 @@
       >
         {{ day.date.getDate() }}
       </div>
-
-      <div class="legend">
-        <span class="dot workout"></span> worked out
-      </div>
     </div>
   </section>
 
@@ -39,10 +35,18 @@
     <div class="card-header">
       <h2>Log</h2>
       <div class="pager">
-        <button class="btn secondary" type="button" (click)="prevPage()" [disabled]="!workouts.length">
+        <button class="btn secondary" type="button" (click)="prevPage()" [disabled]="(offset$ | async) === 0">
           Prev
         </button>
-        <button class="btn secondary" type="button" (click)="nextPage(workouts.length)" [disabled]="workouts.length < 50">
+        <div class="page-indicator">
+          Page {{ (currentPage$ | async) || 1 }} of {{ (totalPages$ | async) || 1 }}
+        </div>
+        <button
+          class="btn secondary"
+          type="button"
+          (click)="nextPage(workouts.length)"
+          [disabled]="((currentPage$ | async) || 1) >= ((totalPages$ | async) || 1)"
+        >
           Next
         </button>
       </div>
@@ -75,7 +79,5 @@
         </tbody>
       </table>
     </div>
-
-    <div class="muted pager-hint">Showing up to 50 at a time.</div>
   </section>
 </div>

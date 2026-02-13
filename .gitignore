@@ -20,3 +20,4 @@ __pycache__/
 export.xml
 *.healthkit.xml
 *.healthdata.xml
+api/app/__pycache__/

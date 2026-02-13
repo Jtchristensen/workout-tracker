@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Barn with cat" fill="none">
+  <defs>
+    <linearGradient id="barn" x1="40" y1="60" x2="216" y2="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b91c1c"/>
+      <stop offset="1" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="64" y1="48" x2="192" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4b5563"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="cat" x1="126" y1="116" x2="164" y2="176" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+
+  <!-- barn body -->
+  <path d="M56 104 L128 56 L200 104 V216 H56 V104Z" fill="url(#barn)" stroke="#450a0a" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- roof -->
+  <path d="M44 112 L128 44 L212 112" stroke="url(#roof)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- door opening -->
+  <path d="M96 216 V128 H160 V216" fill="#111827" opacity="0.92"/>
+
+  <!-- barn trim X -->
+  <path d="M102 138 L154 190" stroke="#fde68a" stroke-width="10" stroke-linecap="round"/>
+  <path d="M154 138 L102 190" stroke="#fde68a" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- cat peeking -->
+  <path d="M112 156 C112 140 124 128 140 128 C156 128 168 140 168 156 C168 178 156 196 140 196 C124 196 112 178 112 156Z" fill="url(#cat)" stroke="#9a3412" stroke-width="6"/>
+  <!-- ears -->
+  <path d="M122 136 L114 120 L132 130Z" fill="#f97316" stroke="#9a3412" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M158 136 L166 120 L148 130Z" fill="#f97316" stroke="#9a3412" stroke-width="5" stroke-linejoin="round"/>
+  <!-- eyes -->
+  <ellipse cx="132" cy="156" rx="6" ry="7" fill="#0b1220"/>
+  <ellipse cx="148" cy="156" rx="6" ry="7" fill="#0b1220"/>
+  <!-- nose -->
+  <path d="M140 166 L136 170 H144Z" fill="#fecaca"/>
+  <!-- whiskers -->
+  <path d="M126 168 H106" stroke="#fff7ed" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+  <path d="M154 168 H174" stroke="#fff7ed" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+</svg>

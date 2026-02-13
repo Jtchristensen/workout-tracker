@@ -35,10 +35,17 @@
     </div>
   </section>
 
-  <section class="card" *ngIf="workouts$ | async as workouts">
+  <section class="card" *ngIf="logWorkouts$ | async as workouts">
     <div class="card-header">
       <h2>Log</h2>
-      <div class="muted" *ngIf="workouts.length">{{ workouts.length }} entries</div>
+      <div class="pager">
+        <button class="btn secondary" type="button" (click)="prevPage()" [disabled]="!workouts.length">
+          Prev
+        </button>
+        <button class="btn secondary" type="button" (click)="nextPage(workouts.length)" [disabled]="workouts.length < 50">
+          Next
+        </button>
+      </div>
     </div>
 
     <div *ngIf="workouts.length === 0" class="muted">No workouts yet.</div>
@@ -68,5 +75,7 @@
         </tbody>
       </table>
     </div>
+
+    <div class="muted pager-hint">Showing up to 50 at a time.</div>
   </section>
 </div>

@@ -44,6 +44,16 @@ h2 {
   margin-bottom: 10px;
 }
 
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pager-hint {
+  margin-top: 10px;
+}
+
 .table-wrap {
   max-height: 520px;
   overflow: auto;

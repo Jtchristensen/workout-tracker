@@ -37,6 +37,13 @@ export class WorkoutApiService {
     return this.http.get<Workout[]>(`${this.baseUrl}/workouts`, { params });
   }
 
+  countWorkouts(filters?: { from?: string; to?: string }): Observable<{ count: number }> {
+    let params = new HttpParams();
+    if (filters?.from) params = params.set('from', filters.from);
+    if (filters?.to) params = params.set('to', filters.to);
+    return this.http.get<{ count: number }>(`${this.baseUrl}/workouts/count`, { params });
+  }
+
   getWorkout(id: number): Observable<Workout> {
     return this.http.get<Workout>(`${this.baseUrl}/workouts/${id}`);
   }

@@ -85,6 +85,20 @@ def create_app() -> Flask:
         )
         return jsonify([w.to_dict() for w in workouts])
 
+    @app.get("/api/workouts/count")
+    def count_workouts():
+        from_s = request.args.get("from")
+        to_s = request.args.get("to")
+
+        q = Workout.query
+        if from_s:
+            q = q.filter(Workout.workout_date >= date.fromisoformat(from_s))
+        if to_s:
+            q = q.filter(Workout.workout_date <= date.fromisoformat(to_s))
+
+        cnt = q.count()
+        return jsonify({"count": cnt})
+
     @app.post("/api/workouts")
     def create_workout():
         data = request.get_json(force=True) or {}
